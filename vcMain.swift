@@ -20,8 +20,8 @@ class vcMain: UIViewController {
         
         var newUser = NSEntityDescription.insertNewObjectForEntityForName("Users", inManagedObjectContext: context) as! NSManagedObject
         
-        newUser.setValue("Test username", forKey: "username")
-        newUser.setValue("Test password", forKey: "password")
+        newUser.setValue("" + txtUsername.text, forKey: "username")
+        newUser.setValue(txtPassword.text, forKey: "password")
         
         context.save(nil)
         
@@ -37,13 +37,19 @@ class vcMain: UIViewController {
         var request = NSFetchRequest (entityName: "Users")
         request.returnsObjectsAsFaults = false;
         
+        request.predicate = NSPredicate(format: "username = %@", txtUsername.text)
+        
         var results: NSArray = context.executeFetchRequest(request, error: nil)!
         
         if(results.count > 0){
-            for res in results{
-                println("results")
-                println(res)
-            }
+            var res = results[0] as! NSManagedObject
+            txtUsername.text = res.valueForKey("username") as! String
+            txtPassword.text = res.valueForKey("password") as! String
+            
+//            for res in results{
+//                println("results")
+//                println(res)
+//            }
         } else {
             println("No user return")
         }
